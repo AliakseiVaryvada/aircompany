@@ -1,146 +1,96 @@
-import Planes.experimentalPlane;
 import models.MilitaryType;
+import Planes.experimentalPlane;
 import Planes.MilitaryPlane;
 import Planes.PassengerPlane;
 import Planes.Plane;
 
 import java.util.*;
-
-// version: 1.1
-// made by Vitali Shulha
-// 4-Jan-2019
+import java.util.stream.Collectors;
 
 public class Airport {
-    private List<? extends Plane> planes;
 
+    private List<? extends Plane> allPlanesList;
 
+    public Airport(List<? extends Plane> allPlanesList) {
+        this.allPlanesList = allPlanesList;
+    }
 
-    public List<PassengerPlane> getPasPl() {
-        List<? extends Plane> l = this.planes;
-        List<PassengerPlane> x = new ArrayList<>();
-        for (Plane p : l) {if (p instanceof PassengerPlane) {x.add((PassengerPlane) p);}}
-        return x;
+    public List<? extends Plane> getPlanes() {
+        return allPlanesList;
+    }
+
+    public List<PassengerPlane> getPassengerPlanes() {
+
+        return allPlanesList.stream()
+                .filter(PassengerPlane.class::isInstance)
+                .map(PassengerPlane.class::cast)
+                .collect(Collectors.toList());
     }
 
     public List<MilitaryPlane> getMilitaryPlanes() {
-        List<MilitaryPlane> militaryPlanes = new ArrayList<>();
-        for (Plane plane : planes) {
-            if (plane instanceof MilitaryPlane) {
-                militaryPlanes.add((MilitaryPlane) plane);
-            } //if
-            else {
 
-            } // else
-        } //for
-        return militaryPlanes;
+        return allPlanesList.stream()
+                .filter(MilitaryPlane.class::isInstance)
+                .map(MilitaryPlane.class::cast)
+                .collect(Collectors.toList());
+    }
+
+    public List<experimentalPlane> getExperimentalPlanes() {
+
+        return allPlanesList.stream()
+                .filter(experimentalPlane.class::isInstance)
+                .map(experimentalPlane.class::cast)
+                .collect(Collectors.toList());
+    }
+
+    public List<MilitaryPlane> getTransportMilitaryPlanes() {
+
+        return getMilitaryPlanes().stream()
+                .filter(plane -> plane.getType() == MilitaryType.TRANSPORT)
+                .collect(Collectors.toList());
+
+    }
+
+    public List<MilitaryPlane> getBomberMilitaryPlanes() {
+
+        return getMilitaryPlanes().stream()
+                .filter(plane -> plane.getType() == MilitaryType.BOMBER)
+                .collect(Collectors.toList());
+
     }
 
     public PassengerPlane getPassengerPlaneWithMaxPassengersCapacity() {
-        List<PassengerPlane> passengerPlanes = getPasPl();
-        PassengerPlane planeWithMaxCapacity = passengerPlanes.get(0);
-        for (int i = 0; i < passengerPlanes.size(); i++) {
-            if (passengerPlanes.get(i).getPassengersCapacity() > planeWithMaxCapacity.getPassengersCapacity()) {
-                planeWithMaxCapacity = passengerPlanes.get(i);
-            }
-        }
 
-
-
-
-
+        PassengerPlane planeWithMaxCapacity =
+                Collections.max(getPassengerPlanes(),
+                        Comparator.comparing(PassengerPlane::getPassengersCapacity));
 
         return planeWithMaxCapacity;
     }
 
-    public List<MilitaryPlane> getTransportMilitaryPlanes() {
-    List<MilitaryPlane> transportMilitaryPlanes = new ArrayList<>();
-    List<MilitaryPlane> militaryPlanes = getMilitaryPlanes();
-    for (int i = 0; i < militaryPlanes.size(); i++) {
-    MilitaryPlane plane = militaryPlanes.get(i);
-    if (plane.getType() == MilitaryType.TRANSPORT) {
-    transportMilitaryPlanes.add(plane);
-    }
-    }
-    return transportMilitaryPlanes;
-    }
-
-    public List<MilitaryPlane> getBomberMilitaryPlanes() {
-        List<MilitaryPlane> bomberMilitaryPlanes = new ArrayList<>();
-        List<MilitaryPlane> militaryPlanes = getMilitaryPlanes();
-        for (int i = 0; i < militaryPlanes.size(); i++) {
-            MilitaryPlane plane = militaryPlanes.get(i);
-            if (plane.getType() == MilitaryType.BOMBER) {
-                bomberMilitaryPlanes.add(plane);
-            }
-        }
-        return bomberMilitaryPlanes;
-
-    }
-
-    public List<experimentalPlane> getExperimentalPlanes() {
-        List<experimentalPlane> experimentalPlanes = new ArrayList<>();
-        for (Plane plane : planes) {
-            if (plane instanceof experimentalPlane) {
-                experimentalPlanes.add((experimentalPlane) plane);
-            }
-        }
-        return experimentalPlanes;
-    }
-
     public Airport sortByMaxDistance() {
-        Collections.sort(planes, new Comparator<Plane>() {
-            public int compare(Plane o1, Plane o2) {
-                return o1.Get_Max_Flight_Distance() - o2.Get_Max_Flight_Distance();
-            }
-        });
+
+        Collections.sort(allPlanesList, Comparator.comparingInt(Plane::getMaxFlightDistance));
         return this;
     }
 
-
-    /**
-     * Sorts by max speed
-     * @return Airport
-     */
     public Airport sortByMaxSpeed() {
-        Collections.sort(planes, new Comparator<Plane>() {
-            public int compare(Plane o1, Plane o2) {
-                return o1.getMS() - o2.getMS();
-            }
-        });
+
+        Collections.sort(allPlanesList, Comparator.comparingInt(Plane::getMaxSpeed));
         return this;
     }
 
     public Airport sortByMaxLoadCapacity() {
-        Collections.sort(planes, new Comparator<Plane>() {
-            public int compare(Plane o1, Plane o2) {
-                return o1.getMinLoadCapacity() - o2.getMinLoadCapacity();
-            }
-        });
+
+        Collections.sort(allPlanesList, Comparator.comparingInt(Plane::getMaxLoadCapacity));
         return this;
-    }
-
-    public List<? extends Plane> getPlanes() {
-        return planes;
-    }
-
-    private void print(Collection<? extends Plane> collection) {
-        Iterator<? extends Plane> iterator = collection.iterator();
-        while (iterator.hasNext()) {
-            Plane plane = iterator.next();
-            System.out.println(plane);
-        }
     }
 
     @Override
     public String toString() {
         return "Airport{" +
-                "Planes=" + planes.toString() +
+                "Planes=" + allPlanesList.toString() +
                 '}';
-    }
-
-    //Constructor
-    public Airport(List<? extends Plane> planes) {
-        this.planes = planes;
     }
 
 }
