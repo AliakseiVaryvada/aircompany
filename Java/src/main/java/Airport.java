@@ -1,5 +1,5 @@
 import models.MilitaryType;
-import Planes.experimentalPlane;
+import Planes.ExperimentalPlane;
 import Planes.MilitaryPlane;
 import Planes.PassengerPlane;
 import Planes.Plane;
@@ -35,11 +35,11 @@ public class Airport {
                 .collect(Collectors.toList());
     }
 
-    public List<experimentalPlane> getExperimentalPlanes() {
+    public List<ExperimentalPlane> getExperimentalPlanes() {
 
         return allPlanesList.stream()
-                .filter(experimentalPlane.class::isInstance)
-                .map(experimentalPlane.class::cast)
+                .filter(ExperimentalPlane.class::isInstance)
+                .map(ExperimentalPlane.class::cast)
                 .collect(Collectors.toList());
     }
 
