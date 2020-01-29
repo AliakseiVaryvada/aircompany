@@ -44,14 +44,9 @@ public class AirportTest {
     public void testGetTransportMilitaryPlanes() {
         Airport airport = new Airport(planesListForTest);
         List<MilitaryPlane> transportMilitaryPlanes = airport.getTransportMilitaryPlanes();
-        boolean detectWrongType = false;
-        for (MilitaryPlane militaryPlane : transportMilitaryPlanes) {
-            if ((militaryPlane.getType() != MilitaryType.TRANSPORT)) {
-                detectWrongType = true;
-                break;
-            }
-        }
-        Assert.assertFalse(detectWrongType);
+
+        Assert.assertEquals(transportMilitaryPlanes.size(), 6);
+
     }
 
     @Test
@@ -59,7 +54,6 @@ public class AirportTest {
 
         Airport airport = new Airport(planesListForTest);
         PassengerPlane expectedPlaneWithMaxPassengersCapacity = airport.getPassengerPlaneWithMaxPassengersCapacity();
-
         Assert.assertEquals(expectedPlaneWithMaxPassengersCapacity.getPassengersCapacity(), 242);
     }
 
@@ -68,12 +62,12 @@ public class AirportTest {
         Airport airport = new Airport(planesListForTest);
         List<? extends Plane> arrayForSort = airport.getPlanes();
         Assert.assertNotEquals(arrayForSort.get(0).getMaxLoadCapacity(), 500);
-        Assert.assertNotEquals(arrayForSort.get(arrayForSort.size()-1).getMaxLoadCapacity(), 110000);
+        Assert.assertNotEquals(arrayForSort.get(arrayForSort.size() - 1).getMaxLoadCapacity(), 110000);
 
         airport.sortByMaxLoadCapacity();
 
         Assert.assertEquals(arrayForSort.get(0).getMaxLoadCapacity(), 500);
-        Assert.assertEquals(arrayForSort.get(arrayForSort.size()-1).getMaxLoadCapacity(), 110000);
+        Assert.assertEquals(arrayForSort.get(arrayForSort.size() - 1).getMaxLoadCapacity(), 110000);
     }
 
     @Test
@@ -84,7 +78,7 @@ public class AirportTest {
     }
 
     @Test
-    public void testExperimentalPlanesWithClassificationLevel(){
+    public void testExperimentalPlanesWithClassificationLevel() {
         Airport airport = new Airport(planesListForTest);
         List<experimentalPlane> experimentalPlanes = airport.getExperimentalPlanes();
         Assert.assertEquals(experimentalPlanes.size(), 2);
